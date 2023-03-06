@@ -1,0 +1,32 @@
+{
+	"comments": [
+		"Mass is optional, color is optional, velocity is optional",
+		"Defaults: Mass is r^3, color is {255, 255, 255}, velocity is {0, 0}"
+	],
+	"objects": [
+		{
+			"position": {
+				"x": 650,
+				"y": 400
+			},
+			"radius": 50,
+			"mass": 250,
+			"color": {
+				"r": 255,
+				"g": 0,
+				"b": 0
+			},
+			"velocity": {
+				"x": 5,
+				"y": -5
+			}
+		},
+		{
+			"position": {
+				"x": 850,
+				"y": 400
+			},
+			"radius": 50
+		}
+	]
+}
