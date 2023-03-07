@@ -9,6 +9,7 @@
 #include <SDL2/SDL.h>
 
 #include "deps/nlohmann/json.hpp"
+#include "deps/yekyam/Args.hpp"
 
 #include "src/Entity.hpp"
 #include "src/HandleJSON.hpp"
@@ -16,14 +17,39 @@
 
 int main(int argc, char **argv)
 {
-	// auto res = export_simulation_to_json("example.json", "sim_frames.json", 2 * 60);
+	YAGP::Args args(argc, argv);
 
-	// if (res != SIMULATION_RESULT::SUCCESS)
-	// {
-	// 	std::cout << "Couldn't create frames, error\n";
-	// }
+	if (argc == 1)
+	{
+		std::cout << "usage:\n";
+		std::cout << "./main -in inital_conditions.json -out simulation_frames.json -fps 60 -time 2\n\n";
+		std::cout << "./main -r simulation_frames.json -fps 60\n\n";
+		return 0;
+	}
+	auto infile = args.get<std::string_view>("-in");
+	auto outfile = args.get<std::string_view>("-out");
+	auto simulation_file = args.get<std::string_view>("-r");
+	auto time = args.get<float>("-time");
+	auto fps = args.get<int>("-fps");
 
-	std::vector<std::vector<Entity>> frames = load_frames_from_file("sim_frames.json");
+	if (infile.has_value() && outfile.has_value())
+	{
+		auto res = export_simulation_to_json(infile.value(), outfile.value(), time.value() * fps.value());
 
-	render_frames(frames, 60);
+		if (res != SIMULATION_RESULT::SUCCESS)
+		{
+			std::cout << "Couldn't create frames, error\n";
+		}
+		return 0;
+	}
+
+	if (!simulation_file.has_value() || !fps.has_value())
+	{
+		std::cout << "Error; refer to documentation\n";
+		return 0;
+	}
+
+	std::vector<std::vector<Entity>> frames = load_frames_from_file(simulation_file.value());
+
+	render_frames(frames, fps.value());
 }
