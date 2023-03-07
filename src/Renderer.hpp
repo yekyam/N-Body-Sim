@@ -11,14 +11,13 @@
 #include "RGB.hpp"
 #include "Vec2d.hpp"
 
-class Renderer
+struct Renderer
 {
 	std::vector<std::vector<Entity>> frames;
 
 	SDL_Window *m_window;
 	SDL_Surface *m_window_surface;
 
-    public:
 	Renderer(std::vector<std::vector<Entity>> frames) : frames(frames)
 	{
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)

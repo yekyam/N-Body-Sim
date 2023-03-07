@@ -4,12 +4,14 @@
 #include <fstream>
 #include <iostream>
 #include <string_view>
-
 #include <vector>
+
+#include <SDL2/SDL.h>
 
 #include "deps/nlohmann/json.hpp"
 
 #include "src/Entity.hpp"
+#include "src/Renderer.hpp"
 #include "src/simulate.hpp"
 
 enum class SIMULATION_RESULT { SUCCESS, IN_FAILURE, OUT_FAILURE };
@@ -76,12 +78,25 @@ export_simulation_to_json(std::string_view infile, std::string_view outfile, siz
 }
 
 int main()
-{ //
-	auto res = export_simulation_to_json("example.json", "sim_frames.json", 30 * 60, true);
+{
+	// auto res = export_simulation_to_json("example.json", "sim_frames.json", 30 * 60, true);
 
-	if (res != SIMULATION_RESULT::SUCCESS)
+	// if (res != SIMULATION_RESULT::SUCCESS)
+	// {
+	// 	std::cout << "Couldn't create frames, error\n";
+	// }
+	// std::cout << "Done creating frames\n";
+	std::vector<std::vector<Entity>> frames;
+
+	Renderer r(frames);
+
+	bool running = true;
+	while (running)
 	{
-		std::cout << "Couldn't create frames, error\n";
+		SDL_Event e;
+		while (SDL_PollEvent(&e) > 0)
+		{
+			SDL_UpdateWindowSurface(r.m_window);
+		}
 	}
-	std::cout << "Done creating frames\n";
 }
