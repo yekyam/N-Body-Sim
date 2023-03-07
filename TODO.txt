@@ -1,0 +1,6 @@
+1) Create a renderer that can render a vector<vector<Entity>> using sdl // should be simple
+2) Create a function that can read the frames from the sim_frame.json file 
+3) Setup main in a way to both render and create frame json
+4) Add screen size to simulation to cull stuff outside of screen
+5) Add a frame counter to the screen 
+6) Allow renderer to play at specified FPS
