@@ -89,3 +89,46 @@ struct Renderer
 		}
 	}
 };
+
+void render_frames(const std::vector<std::vector<Entity>> &frames, int fps = 60)
+{
+	Renderer r(frames);
+
+	SDL_RenderSetVSync(r.m_renderer, 0);
+
+	float time_per_frame = (1.0 / fps) * 1000;
+
+	bool running = true;
+	while (running)
+	{
+		r.clear();
+
+		SDL_Event e;
+		while (SDL_PollEvent(&e) > 0)
+		{
+			switch (e.type)
+			{
+			case SDL_QUIT:
+				running = false;
+			}
+		}
+		auto start = SDL_GetTicks();
+
+		r.draw_frame();
+
+		SDL_RenderPresent(r.m_renderer);
+
+		auto end = SDL_GetTicks();
+
+		auto total_time = end - start;
+
+		if (total_time < time_per_frame)
+		{
+
+			SDL_Delay(time_per_frame - total_time);
+		}
+
+		if (r.done_rendering)
+			return;
+	}
+}
