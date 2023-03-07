@@ -77,26 +77,88 @@ export_simulation_to_json(std::string_view infile, std::string_view outfile, siz
 	return SIMULATION_RESULT::SUCCESS;
 }
 
+std::vector<std::vector<Entity>> load_frames_from_file(std::string_view infile)
+{
+	std::vector<std::vector<Entity>> frames;
+	std::fstream file(infile);
+	if (!file)
+	{
+		std::cout << "Error opening file " << infile << '\n';
+		return frames;
+	}
+	auto json_data = nlohmann::json::parse(file);
+
+	frames.reserve(json_data.size());
+
+	for (const auto &frame_json : json_data)
+	{
+		std::vector<Entity> frame;
+		frame.reserve(frame_json.size());
+
+		for (const auto &entity_json : frame_json)
+		{
+			auto e = entity_json.get<Entity>();
+
+			frame.push_back(e);
+		}
+		frames.push_back(frame);
+	}
+	return frames;
+}
+
+void render_frames(const std::vector<std::vector<Entity>> &frames, int fps = 60)
+{
+	Renderer r(frames);
+
+	SDL_RenderSetVSync(r.m_renderer, 0);
+
+	float time_per_frame = (1.0 / fps) * 1000;
+
+	bool running = true;
+	while (running)
+	{
+		r.clear();
+
+		SDL_Event e;
+		while (SDL_PollEvent(&e) > 0)
+		{
+			switch (e.type)
+			{
+			case SDL_QUIT:
+				running = false;
+			}
+		}
+		auto start = SDL_GetTicks();
+
+		r.draw_frame();
+
+		SDL_RenderPresent(r.m_renderer);
+
+		auto end = SDL_GetTicks();
+
+		auto total_time = end - start;
+
+		if (total_time < time_per_frame)
+		{
+
+			SDL_Delay(time_per_frame - total_time);
+		}
+
+		if (r.done_rendering)
+			return;
+	}
+}
+
 int main()
 {
-	// auto res = export_simulation_to_json("example.json", "sim_frames.json", 30 * 60, true);
+	// auto res = export_simulation_to_json("example.json", "sim_frames.json", 2 * 60);
 
 	// if (res != SIMULATION_RESULT::SUCCESS)
 	// {
 	// 	std::cout << "Couldn't create frames, error\n";
 	// }
-	// std::cout << "Done creating frames\n";
-	std::vector<std::vector<Entity>> frames;
 
-	Renderer r(frames);
+	std::vector<std::vector<Entity>> frames = load_frames_from_file("sim_frames.json");
 
-	bool running = true;
-	while (running)
-	{
-		SDL_Event e;
-		while (SDL_PollEvent(&e) > 0)
-		{
-			SDL_UpdateWindowSurface(r.m_window);
-		}
-	}
+	render_frames(frames, 60);
 }
