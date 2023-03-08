@@ -26,10 +26,6 @@ export_simulation_to_json(std::string_view infile, std::string_view outfile, siz
 
 	std::vector<Entity> initial_conditions;
 
-	if (verbose)
-	{
-		std::cout << "Inital entites:\n";
-	}
 	for (auto &something : json_data)
 	{
 
@@ -39,10 +35,6 @@ export_simulation_to_json(std::string_view infile, std::string_view outfile, siz
 			auto e = object.get<Entity>();
 			initial_conditions.push_back(e);
 			auto current_entity_index = initial_conditions.size() - 1;
-			if (verbose)
-			{
-				std::cout << initial_conditions[current_entity_index] << '\n';
-			}
 		}
 	}
 
