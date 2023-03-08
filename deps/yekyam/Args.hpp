@@ -136,7 +136,6 @@ class Args
 		}
 
 		auto str_view_value = str_view_option.value();
-		std::cout << "value: " << str_view_value << '\n';
 
 		char *end;
 		float f_value = std::strtof(str_view_value.data(), &end);

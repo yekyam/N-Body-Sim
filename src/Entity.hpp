@@ -41,39 +41,51 @@ struct Entity
 
 	friend void from_json(const nlohmann::json &j, Entity &e)
 	{ //
-		j.at("position").at("x").get_to(e.center.x);
-		j.at("position").at("y").get_to(e.center.y);
+		try
+		{
+			j.at("position").at("x").get_to(e.center.x);
+			j.at("position").at("y").get_to(e.center.y);
 
-		j.at("radius").get_to(e.radius);
+			j.at("radius").get_to(e.radius);
 
-		if (!j.contains("mass"))
-		{
-			e.mass = pow(e.radius, 3);
-		} else
-		{
-			j.at("mass").get_to(e.mass);
-		}
-		if (!j.contains("color"))
-		{
-			e.color.r = 255;
-			e.color.g = 255;
-			e.color.b = 255;
+			if (!j.contains("mass"))
+			{
+				e.mass = pow(e.radius, 3);
+			} else
+			{
+				j.at("mass").get_to(e.mass);
+			}
+			if (!j.contains("color"))
+			{
+				e.color.r = 255;
+				e.color.g = 255;
+				e.color.b = 255;
 
-		} else
-		{
-			j.at("color").at("r").get_to(e.color.r);
-			j.at("color").at("g").get_to(e.color.g);
-			j.at("color").at("b").get_to(e.color.b);
-		}
+			} else
+			{
+				j.at("color").at("r").get_to(e.color.r);
+				j.at("color").at("g").get_to(e.color.g);
+				j.at("color").at("b").get_to(e.color.b);
+			}
 
-		if (!j.contains("velocity"))
+			if (!j.contains("velocity"))
+			{
+				e.velocity.x = 0;
+				e.velocity.y = 0;
+			} else
+			{
+				j.at("velocity").at("x").get_to(e.velocity.x);
+				j.at("velocity").at("y").get_to(e.velocity.y);
+			}
+		} catch (nlohmann::json::type_error &exception)
 		{
+			e.center.x = 0;
+			e.center.y = 0;
+			e.mass = 0;
+			e.radius = 0;
+			e.color = RGB{0, 0, 0};
 			e.velocity.x = 0;
 			e.velocity.y = 0;
-		} else
-		{
-			j.at("velocity").at("x").get_to(e.velocity.x);
-			j.at("velocity").at("y").get_to(e.velocity.y);
 		}
 	}
 };
