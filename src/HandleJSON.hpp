@@ -26,16 +26,14 @@ export_simulation_to_json(std::string_view infile, std::string_view outfile, siz
 
 	std::vector<Entity> initial_conditions;
 
-	for (auto &something : json_data)
+	initial_conditions.reserve(json_data.size());
+
+	for (auto &object : json_data)
 	{
 
-		initial_conditions.reserve(something.size());
-		for (auto &object : something)
-		{
-			auto e = object.get<Entity>();
-			initial_conditions.push_back(e);
-			auto current_entity_index = initial_conditions.size() - 1;
-		}
+		auto e = object.get<Entity>();
+		initial_conditions.push_back(e);
+		auto current_entity_index = initial_conditions.size() - 1;
 	}
 
 	auto start_time = std::chrono::steady_clock::now();

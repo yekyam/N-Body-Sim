@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.hpp"
+#include "Vec2d.hpp"
 #include <cmath>
 
 #include <vector>
@@ -96,6 +97,7 @@ std::vector<Entity> do_constraints(const std::vector<Entity> frame)
 
 				new_entity.radius = obj1.radius + obj2.radius;
 				new_entity.mass = obj1.mass + obj2.mass;
+				new_entity.velocity = Vec2d{0.0, 0.0};
 
 				if (obj1.mass < obj2.mass)
 				{
