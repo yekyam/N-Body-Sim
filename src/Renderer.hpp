@@ -130,8 +130,6 @@ void render_frames(const std::vector<std::vector<Entity>> &frames, int fps = 60)
 		auto end = SDL_GetTicks();
 
 		auto total_time = end - start;
-		std::cout << "Time per frame: " << total_time << '\n';
-		std::cout << "Objects in frame: " << frames[r.current_frame].size() << '\n';
 
 		if (total_time < time_per_frame)
 		{
