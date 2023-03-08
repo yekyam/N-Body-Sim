@@ -31,10 +31,13 @@ int main(int argc, char **argv)
 	auto simulation_file = args.get<std::string_view>("-r");
 	auto time = args.get<float>("-time");
 	auto fps = args.get<int>("-fps");
+	auto show_timing = args.get<bool>("-v");
 
-	if (infile.has_value() && outfile.has_value())
+	if (infile.has_value() && outfile.has_value() && time.has_value() && fps.has_value())
 	{
-		auto res = export_simulation_to_json(infile.value(), outfile.value(), time.value() * fps.value());
+		bool verbose = show_timing.has_value();
+		auto res =
+		    export_simulation_to_json(infile.value(), outfile.value(), time.value() * fps.value(), verbose);
 
 		if (res != SIMULATION_RESULT::SUCCESS)
 		{

@@ -72,20 +72,29 @@ struct Renderer
 
 		SDL_SetRenderDrawColor(m_renderer, e.color.r, e.color.g, e.color.b, 255);
 
-		int x = std::round(e.center.x);
-		int y = std::round(e.center.y);
+		int x = 0;
+		int y = e.radius;
+		int m = 5 - 4 * e.radius;
 
-		for (int w = 0; w < e.radius * 2; w++)
+		int center_x = std::round(e.center.x);
+		int center_y = std::round(e.center.y);
+
+		// previous_positions.push_back(e.center)
+
+		while (x <= y)
 		{
-			for (int h = 0; h < e.radius * 2; h++)
+			SDL_RenderDrawLine(m_renderer, center_x - x, center_y - y, center_x + x, center_y - y);
+			SDL_RenderDrawLine(m_renderer, center_x - y, center_y - x, center_x + y, center_y - x);
+			SDL_RenderDrawLine(m_renderer, center_x - y, center_y + x, center_x + y, center_y + x);
+			SDL_RenderDrawLine(m_renderer, center_x - x, center_y + y, center_x + x, center_y + y);
+
+			if (m > 0)
 			{
-				int dx = e.radius - w; // horizontal offset
-				int dy = e.radius - h; // vertical offset
-				if ((dx * dx + dy * dy) <= (e.radius * e.radius))
-				{
-					SDL_RenderDrawPoint(m_renderer, x + dx, y + dy);
-				}
+				y -= 1;
+				m -= 8 * y;
 			}
+			x += 1;
+			m += 8 * x + 4;
 		}
 	}
 };
@@ -121,6 +130,8 @@ void render_frames(const std::vector<std::vector<Entity>> &frames, int fps = 60)
 		auto end = SDL_GetTicks();
 
 		auto total_time = end - start;
+		std::cout << "Time per frame: " << total_time << '\n';
+		std::cout << "Objects in frame: " << frames[r.current_frame].size() << '\n';
 
 		if (total_time < time_per_frame)
 		{

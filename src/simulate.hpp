@@ -26,7 +26,12 @@ std::vector<Entity> calculate_new_positions_from_previous_frame(const std::vecto
 			{
 				continue;
 			}
-			float distance = calculate_distance(obj1.center, obj2.center);
+			double distance = calculate_distance(obj1.center, obj2.center);
+
+			if (distance == 0)
+			{
+				distance = 0.0000001;
+			}
 
 			float gravitation_force = (obj1.mass * obj2.mass) / pow(distance, 2);
 			gravitation_force = -gravitation_force;
@@ -78,7 +83,7 @@ std::vector<Entity> do_constraints(const std::vector<Entity> frame)
 			auto obj2_marked_deleted =
 			    std::find(deleted_objects.begin(), deleted_objects.end(), &obj2) != deleted_objects.end();
 
-			if (obj1_marked_deleted && obj2_marked_deleted)
+			if (obj1_marked_deleted || obj2_marked_deleted)
 			{
 				continue;
 			}
