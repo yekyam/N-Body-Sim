@@ -4,6 +4,7 @@
 
 #include "RGB.hpp"
 #include "Vec2d.hpp"
+#include <iostream>
 
 struct Entity
 {
@@ -47,6 +48,13 @@ struct Entity
 			j.at("position").at("y").get_to(e.center.y);
 
 			j.at("radius").get_to(e.radius);
+
+			if (e.radius == 0)
+			{
+				std::cout << "Warning: Object with a radius of 0 found in input json. Defaulting to 1"
+					  << "\n";
+				e.radius = 1;
+			}
 
 			if (!j.contains("mass"))
 			{
